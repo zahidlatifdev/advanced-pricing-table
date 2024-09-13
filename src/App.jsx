@@ -5,19 +5,11 @@ import PricingEditor from './components/PricingEditor'
 function App() {
     return (
         <Router>
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Pricing Editor</Link>
-                        </li>
-                    </ul>
-                </nav>
+            
 
                 <Routes>
                     <Route path="/" element={<PricingEditor />} />
                 </Routes>
-            </div>
         </Router>
     )
 }

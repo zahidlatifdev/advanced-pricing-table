@@ -68,4 +68,7 @@
     @apply bg-background text-foreground;
     font-family: "Poppins", sans-serif;
   }
+  a {
+    text-decoration: none;
+  }
 }
