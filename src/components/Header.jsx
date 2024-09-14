@@ -26,7 +26,7 @@ export default function Header({ pageTitle, setPageTitle, isEditing, setIsEditin
                     )}
                 </h1>
             </motion.div>
-            <div className="flex justify-end mb-8 space-x-4">
+            <div id="export" className="flex justify-end mb-8 space-x-4">
                 {!isEditing && (
                     <Button
                         onClick={exportPricingPage}

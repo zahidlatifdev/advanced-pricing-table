@@ -1,75 +1,53 @@
-const exportPricingPage = () => {
-    const htmlContent = generateHTML()
-    const cssContent = generateCSS()
-    const jsContent = generateJS()
+import React from 'react';
 
-    downloadFile('pricing-page.html', htmlContent)
-    downloadFile('pricing-page.css', cssContent)
-    downloadFile('pricing-page.js', jsContent)
-}
+const exportPricingPage = () => {
+    const htmlContent = generateHTML();
+    const cssContent = generateCSS();
+
+    downloadFile('pricing-page.html', htmlContent);
+    downloadFile('pricing-page.css', cssContent);
+};
 
 const downloadFile = (filename, content) => {
-    const element = document.createElement('a')
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
-    element.setAttribute('download', filename)
-    element.style.display = 'none'
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
-}
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+};
 
+// Capture the current HTML code by getting the body content of the rendered page and removing unwanted buttons
 const generateHTML = () => {
-    // Generate HTML content based on current state
-    // This is a simplified version and would need to be expanded
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${pageTitle}</title>
-<link rel="stylesheet" href="pricing-page.css">
-</head>
-<body>
-<div id="pricing-page"></div>
-<script src="pricing-page.js"></script>
-</body>
-</html>
-    `
-}
+    const clonedDocument = document.documentElement.cloneNode(true); // Clone the entire document to manipulate it
+    const exportSection = clonedDocument.querySelector('#export'); // Assuming #exportButton is the ID for the expor
 
+    // Remove export and edit buttons if they exist
+    if (exportSection) exportSection.remove();
+
+    // Return the modified HTML content
+    return clonedDocument.outerHTML;
+};
+
+// Capture the current CSS styles applied on the page
 const generateCSS = () => {
-    // Generate CSS content
-    // This is a simplified version and would need to be expanded
-    return `
-body {
-font-family: Arial, sans-serif;
-line-height: 1.6;
-color: #333;
-}
+    let css = '';
+    const styleSheets = document.styleSheets;
 
-.container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 0 15px;
-}
+    for (let i = 0; i < styleSheets.length; i++) {
+        const sheet = styleSheets[i];
+        try {
+            const rules = sheet.cssRules || sheet.rules; // Get the CSS rules
 
-/* Add more styles here */
-    `
-}
-
-const generateJS = () => {
-    // Generate JS content
-    // This is a simplified version and would need to be expanded
-    return `
-document.addEventListener('DOMContentLoaded', function() {
-const pricingPage = document.getElementById('pricing-page');
-pricingPage.innerHTML = \`
-    <h1>${pageTitle}</h1>
-    <!-- Add more dynamic content here -->
-\`;
-});
-    `
-}
+            for (let j = 0; j < rules.length; j++) {
+                css += rules[j].cssText + '\n'; // Combine all the CSS rules
+            }
+        } catch (e) {
+            console.warn("Couldn't access some CSS rules due to CORS policy");
+        }
+    }
+    return css;
+};
 
 export default exportPricingPage;
