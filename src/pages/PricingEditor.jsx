@@ -1,6 +1,9 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
+import plansData from '../data/plans'
+import additionalFeaturesData from '../data/additionalFeatures'
+import currenciesData from '../data/currenciesData'
+import faqsData from '../data/faqsData'
+import exportPricingPage from '@/components/exports/pricingDownloadHandler'
 import { Check, HelpCircle, Info, Zap, X, ArrowRight, Shield, Clock, Users, BarChart, Edit3, Save, Trash2, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,105 +31,18 @@ const iconMap = {
     ArrowRight,
 }
 
-export default function EnhancedEditablePricingPage() {
+export default function PricingEditor() {
     const [isEditing, setIsEditing] = useState(false)
     const [isYearly, setIsYearly] = useState(false)
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [showComparison, setShowComparison] = useState(false)
     const [currency, setCurrency] = useState('USD')
-    const [promoCode, setPromoCode] = useState('')
-    const [discountApplied, setDiscountApplied] = useState(false)
     const [progress, setProgress] = useState(0)
     const [pageTitle, setPageTitle] = useState('Choose Your Perfect Plan')
-
-    const [plans, setPlans] = useState([
-        {
-            name: 'Basic',
-            description: 'Essential features for small projects',
-            monthlyPrice: 19,
-            yearlyPrice: 190,
-            features: [
-                { name: 'Up to 5 projects', description: 'Create and manage up to 5 different projects' },
-                { name: '5GB storage', description: 'Store up to 5GB of files and assets' },
-                { name: 'Basic support', description: 'Email support with 48-hour response time' },
-                { name: 'Limited API access', description: 'Access to basic API endpoints' },
-                { name: 'Community forums', description: 'Access to our community support forums' },
-            ],
-            color: '#3b82f6',
-            maxUsers: "Max Users: 5",
-            trialDays: "Trial Period: 14 days",
-        },
-        {
-            name: 'Pro',
-            description: 'Advanced features for growing teams',
-            monthlyPrice: 49,
-            yearlyPrice: 490,
-            features: [
-                { name: 'Unlimited projects', description: 'Create and manage an unlimited number of projects' },
-                { name: '50GB storage', description: 'Store up to 50GB of files and assets' },
-                { name: 'Priority support', description: 'Email and chat support with 24-hour response time' },
-                { name: 'Advanced analytics', description: 'Gain insights with detailed project and team analytics' },
-                { name: 'Full API access', description: 'Unrestricted access to all API endpoints' },
-                { name: 'Custom integrations', description: 'Connect with your favorite tools' },
-                { name: 'Team collaboration', description: 'Advanced team management and collaboration features' },
-            ],
-            color: '#8b5cf6',
-            popular: true,
-            maxUsers: "Max Users: 20",
-            trialDays: "Trial Period: 30 days",
-        },
-        {
-            name: 'Enterprise',
-            description: 'Custom solutions for large organizations',
-            monthlyPrice: 99,
-            yearlyPrice: 990,
-            features: [
-                { name: 'Unlimited everything', description: 'No limits on projects, storage, or team members' },
-                { name: 'Dedicated support', description: '24/7 phone, email, and chat support with dedicated account manager' },
-                { name: 'Custom integrations', description: 'Build and maintain custom integrations for your workflow' },
-                { name: 'SLA', description: 'Guaranteed uptime and performance with custom SLA' },
-                { name: 'Advanced security', description: 'Enhanced security features and compliance support' },
-                { name: 'Custom training', description: 'Personalized onboarding and training sessions' },
-                { name: 'White-labeling', description: 'Ability to white-label the platform with your branding' },
-            ],
-            color: '#10b981',
-            maxUsers: "Max Users: Unlimited",
-            trialDays: "Trial Period: 30 days",
-        },
-    ])
-
-    const [additionalFeatures, setAdditionalFeatures] = useState([
-        { name: 'Single Sign-On (SSO)', description: 'Secure and streamlined authentication', icon: 'Shield' },
-        { name: 'Audit Logs', description: 'Detailed logs of all account activities', icon: 'Clock' },
-        { name: 'User Roles & Permissions', description: 'Granular control over user access', icon: 'Users' },
-        { name: 'Advanced Reporting', description: 'Generate and export custom reports', icon: 'BarChart' },
-    ])
-
-    const [currencies, setCurrencies] = useState({
-        USD: { symbol: '$', rate: 1 },
-        EUR: { symbol: '€', rate: 0.85 },
-        GBP: { symbol: '£', rate: 0.75 },
-        JPY: { symbol: '¥', rate: 110 },
-    })
-
-    const [faqs, setFaqs] = useState([
-        {
-            question: 'What payment methods do you accept?',
-            answer: 'We accept all major credit cards, PayPal, and bank transfers for annual subscriptions.',
-        },
-        {
-            question: 'Can I change my plan later?',
-            answer: 'Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.',
-        },
-        {
-            question: 'Is there a long-term commitment?',
-            answer: 'No, all plans are billed monthly or annually with no long-term commitment. You can cancel at any time.',
-        },
-        {
-            question: 'Do you offer custom enterprise solutions?',
-            answer: 'Yes, we offer tailored solutions for large enterprises. Please contact our sales team for more information.',
-        },
-    ])
+    const [plans, setPlans] = useState(plansData)
+    const [additionalFeatures, setAdditionalFeatures] = useState(additionalFeaturesData)
+    const [currencies, setCurrencies] = useState(currenciesData)
+    const [faqs, setFaqs] = useState(faqsData)
 
     const [buttons, setButtons] = useState({
         confirmSubscription: { text: 'Confirm Subscription', href: '#' },
@@ -139,89 +55,8 @@ export default function EnhancedEditablePricingPage() {
         return () => clearTimeout(timer)
     }, [])
 
-    const exportPricingPage = () => {
-        const htmlContent = generateHTML()
-        const cssContent = generateCSS()
-        const jsContent = generateJS()
-
-        downloadFile('pricing-page.html', htmlContent)
-        downloadFile('pricing-page.css', cssContent)
-        downloadFile('pricing-page.js', jsContent)
-    }
-
-    const downloadFile = (filename, content) => {
-        const element = document.createElement('a')
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
-        element.setAttribute('download', filename)
-        element.style.display = 'none'
-        document.body.appendChild(element)
-        element.click()
-        document.body.removeChild(element)
-    }
-
-    const generateHTML = () => {
-        // Generate HTML content based on current state
-        // This is a simplified version and would need to be expanded
-        return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${pageTitle}</title>
-    <link rel="stylesheet" href="pricing-page.css">
-</head>
-<body>
-    <div id="pricing-page"></div>
-    <script src="pricing-page.js"></script>
-</body>
-</html>
-        `
-    }
-
-    const generateCSS = () => {
-        // Generate CSS content
-        // This is a simplified version and would need to be expanded
-        return `
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
-
-/* Add more styles here */
-        `
-    }
-
-    const generateJS = () => {
-        // Generate JS content
-        // This is a simplified version and would need to be expanded
-        return `
-document.addEventListener('DOMContentLoaded', function() {
-    const pricingPage = document.getElementById('pricing-page');
-    pricingPage.innerHTML = \`
-        <h1>${pageTitle}</h1>
-        <!-- Add more dynamic content here -->
-    \`;
-});
-        `
-    }
-
     const handleCurrencyChange = (value) => {
         setCurrency(value)
-    }
-
-    const handlePromoCodeSubmit = (e) => {
-        e.preventDefault()
-        if (promoCode.toLowerCase() === 'discount10') {
-            setDiscountApplied(true)
-        }
     }
 
     const formatPrice = (price) => {
@@ -416,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-16 overflow-hidden">
+        <div className="container mx-auto px-20 py-16 overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -672,20 +507,20 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <p className="text-center text-sm text-gray-500 mt-12">
-                    {renderEditableText('All plans come with a 30-day money-back guarantee.', () => { })}
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <HelpCircle className="inline-block h-4 w-4 ml-1 mb-1 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>
-                                    {renderEditableText("If you're not satisfied, get a full refund within 30 days", () => { })}
-                                </p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </p>
+                {renderEditableText('All plans come with a 30-day money-back guarantee.', () => { })}
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <HelpCircle className="inline-block h-4 w-4 ml-1 mb-1 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>
+                                {renderEditableText("If you're not satisfied, get a full refund within 30 days", () => { })}
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </p>
 
             {isEditing && (
                 <Button className="mt-4" onClick={addPlan}>
@@ -847,23 +682,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 className="text-2xl font-bold text-center mb-8">
                     {renderEditableText('Have a Promo Code?', () => { })}
                 </h2>
-                <form onSubmit={handlePromoCodeSubmit} className="flex justify-center">
+                <div className="flex justify-center">
                     <Input
                         type="text"
                         placeholder="Enter promo code"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
                         className="max-w-xs mr-2"
                     />
-                    <Button type="submit">
+                    <Button>
                         {renderEditableLink('apply')}
                     </Button>
-                </form>
-                {discountApplied && (
-                    <p className="text-center text-green-500 mt-2">
-                        {renderEditableText('10% discount applied!', () => { })}
-                    </p>
-                )}
+                </div>
             </div>
 
             <div className="mt-16">

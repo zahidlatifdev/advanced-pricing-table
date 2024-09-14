@@ -1,0 +1,57 @@
+const plansData = [
+    {
+        name: 'Basic',
+        description: 'Essential features for small projects',
+        monthlyPrice: 19,
+        yearlyPrice: 190,
+        features: [
+            { name: 'Up to 5 projects', description: 'Create and manage up to 5 different projects' },
+            { name: '5GB storage', description: 'Store up to 5GB of files and assets' },
+            { name: 'Basic support', description: 'Email support with 48-hour response time' },
+            { name: 'Limited API access', description: 'Access to basic API endpoints' },
+            { name: 'Community forums', description: 'Access to our community support forums' },
+        ],
+        color: '#3b82f6',
+        maxUsers: "Max Users: 5",
+        trialDays: "Trial Period: 14 days",
+    },
+    {
+        name: 'Pro',
+        description: 'Advanced features for growing teams',
+        monthlyPrice: 49,
+        yearlyPrice: 490,
+        features: [
+            { name: 'Unlimited projects', description: 'Create and manage an unlimited number of projects' },
+            { name: '50GB storage', description: 'Store up to 50GB of files and assets' },
+            { name: 'Priority support', description: 'Email and chat support with 24-hour response time' },
+            { name: 'Advanced analytics', description: 'Gain insights with detailed project and team analytics' },
+            { name: 'Full API access', description: 'Unrestricted access to all API endpoints' },
+            { name: 'Custom integrations', description: 'Connect with your favorite tools' },
+            { name: 'Team collaboration', description: 'Advanced team management and collaboration features' },
+        ],
+        color: '#8b5cf6',
+        popular: true,
+        maxUsers: "Max Users: 20",
+        trialDays: "Trial Period: 30 days",
+    },
+    {
+        name: 'Enterprise',
+        description: 'Custom solutions for large organizations',
+        monthlyPrice: 99,
+        yearlyPrice: 990,
+        features: [
+            { name: 'Unlimited everything', description: 'No limits on projects, storage, or team members' },
+            { name: 'Dedicated support', description: '24/7 phone, email, and chat support with dedicated account manager' },
+            { name: 'Custom integrations', description: 'Build and maintain custom integrations for your workflow' },
+            { name: 'SLA', description: 'Guaranteed uptime and performance with custom SLA' },
+            { name: 'Advanced security', description: 'Enhanced security features and compliance support' },
+            { name: 'Custom training', description: 'Personalized onboarding and training sessions' },
+            { name: 'White-labeling', description: 'Ability to white-label the platform with your branding' },
+        ],
+        color: '#10b981',
+        maxUsers: "Max Users: Unlimited",
+        trialDays: "Trial Period: 30 days",
+    },
+];
+
+export default plansData;
