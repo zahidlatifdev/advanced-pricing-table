@@ -13,7 +13,7 @@ import SubscriptionDialog from '@/components/SubscriptionDialog'
 import GrowthIndicator from '@/components/GrowthIndicator'
 import Footer from '@/components/Footer'
 
-import plansData from '../data/plans'
+import plansData from '../data/Plans'
 import additionalFeaturesData from '../data/additionalFeatures'
 import currenciesData from '../data/currenciesData'
 import faqsData from '../data/faqsData'
